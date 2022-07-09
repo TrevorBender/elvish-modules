@@ -89,6 +89,9 @@ fn single-user-setup {
       $nix-link"/sbin"
       $@paths
     ]
+
+    set-env NIX_PROFILES "/nix/var/nix/profiles/default "$E:HOME"/.nix-profile"
+
     # Subscribe the user to the Nixpkgs channel by default.
     if (not ?(test -e ~/.nix-channels)) {
       echo "https://nixos.org/channels/nixpkgs-unstable nixpkgs" > ~/.nix-channels
@@ -120,10 +123,10 @@ fn single-user-setup {
 }
 
 fn search {|@pkgs|
-  var pipecmd = cat
+  var pipecmd = $e:cat~
   var opts = []
   if (eq $pkgs[0] "--json") {
-    set pipecmd = json_pp
+    set pipecmd = { e:json_pp | batcat -l json }
   }
   nix-env -qa $@opts $@pkgs | $pipecmd
 }

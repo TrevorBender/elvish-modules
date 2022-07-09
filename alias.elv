@@ -66,6 +66,13 @@ fn def {|&verbose=$false &save=$false &use=[] name @cmd|
   if $save {
     save $name
   }
+  # NOTE: updated alias to use completions on alias
+  if (has-key $edit:completion:arg-completer $cmd[0]) {
+    set edit:completion:arg-completer[$name] = $edit:completion:arg-completer[$cmd[0]]
+    if $verbose {
+      echo (styled "Updated completion "$cmd[0]" -> "$name green)
+    }
+  }
   if $verbose {
     echo (styled "Alias "$name" defined"(if $save { echo " and saved" } else { echo "" })"." green)
   }
