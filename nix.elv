@@ -5,7 +5,7 @@
 
 use re
 use str
-use github.com/zzamboni/elvish-modules/util
+use github.com/TrevorBender/elvish-modules/util
 
 fn multi-user-setup {
   # Set up secure multi-user builds: non-root users build through the
@@ -91,6 +91,7 @@ fn single-user-setup {
     ]
 
     set-env NIX_PROFILES "/nix/var/nix/profiles/default "$E:HOME"/.nix-profile"
+    set-env XDG_DATA_DIRS "~/.nix-profile/share:"$E:XDG_DATA_DIRS
 
     # Subscribe the user to the Nixpkgs channel by default.
     if (not ?(test -e ~/.nix-channels)) {
@@ -128,11 +129,11 @@ fn search {|@pkgs|
   if (eq $pkgs[0] "--json") {
     set pipecmd = { e:json_pp | batcat -l json }
   }
-  nix-env -qa $@opts $@pkgs | $pipecmd
+  nix search nixpkgs $@opts $@pkgs | $pipecmd
 }
 
 fn install {|@pkgs|
-  nix-env -i $@pkgs
+  nix profile install $@pkgs
 }
 
 fn brew-to-nix {
